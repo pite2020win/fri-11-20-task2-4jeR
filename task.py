@@ -28,3 +28,83 @@
 #
 #Delete these comments before commit!
 #Good luck.
+
+
+
+
+class Student:
+    def __init__(self, name, surname, grades=[]):
+        self.name = name
+        self.surname = surname
+        self.school_name = 'No school.'
+        self.subject = 'No subject'
+        self.class_grade = 'No class grade.'
+        self.grades = []
+        for grade in grades:
+            self.grades.append(grade)
+
+
+    def __str__(self):
+        return f'{self.name} {self.surname}, {self.school_name}. Studies {self.subject} on {self.class_grade} year. Grades: {self.grades}' 
+
+    def calculate_average(self):
+        try:
+            return sum(self.grades) / len(self.grades)
+        except:
+            print("No grades.")
+
+class Diary:
+    def __init__(self, school_name, subject, class_grade):
+        self.school_name = school_name
+        self.subject = subject
+        self.class_grade = class_grade
+        self.students = []
+        self._index = 0
+
+    def __iter__(self):
+       return self
+
+    def __next__(self):
+        if self._index >= len(self.students):
+            raise StopIteration
+        current = self._index
+        self._index += 1    
+        return self.students[current]
+
+    def __str__(self):
+        return f'Average score for class {self.subject} is : {self.calculate_average()}'
+
+    def add_student(self, student):
+        self.students.append(student)
+        student.school_name = self.school_name
+        student.subject = self.subject
+        student.class_grade = self.class_grade
+
+
+    def calculate_average(self):
+        s = 0
+        for student in self.students:
+            s += student.calculate_average()
+
+        s /= len(self.students)
+
+        return s 
+
+
+if __name__=='__main__':
+    diary = Diary("AGH UST", "Maths", "1")
+    students = [
+        Student('Adam', 'Kowalski', [4, 3, 4, 2]),
+        Student('Piotr', 'Nowak', [2, 2, 5, 5]),
+        Student('Anna', 'Robak', [2, 2, 5, 5])
+    ]
+    
+    for student in students:
+        diary.add_student(student)
+
+    diary.add_student(Student("Monika", "Jedrzejczak", [3, 3, 5]))
+
+    for student in diary:
+        print(f'Average of student in {diary.subject} {student.name} {student.surname} {student.calculate_average()}')
+    
+        
